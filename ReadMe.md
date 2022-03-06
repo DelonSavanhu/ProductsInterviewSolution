@@ -1,51 +1,17 @@
-# Build a Supplier Product List Processor
+# Supplier Product List Processor
 
-#### Requirement: 
-
-We have multiple different formats of files that need to be parsed and returned back as a Product object with all the headings as mapped properties. 
-
-Each product object constitutes a single row within the csv file.
-
-#### Example Application API:
+#### Delon Savanhu Submission
+#### Usage:
 `parser.php --file example_1.csv --unique-combinations=combination_count.csv`
 
-When the above is run the parser should display row by row each product object representation of the row. And create a file with a grouped count for each unique combination i.e. make, model, colour, capacity, network, grade, condition.
+#### Description
+This is a basic php application that accepts a file(.csv,.json or .xml) and then transforms it into product object.
 
-#### Example Product Object:
-- make: 'Apple' (string, required) - Brand name
-- model: 'iPhone 6s Plus' (string, required) - Model name
-- colour: 'Red' (string) - Colour name
-- capacity: '256GB' (string) - GB Spec name
-- network: 'Unlocked' (string) - Network name
-- grade: 'Grade A' (string) - Grade Name
-- condition: 'Working' (string) - Condition name
-
-#### Example Unique Combinations File:
-- make: 'Apple'
-- model: 'iPhone 6s Plus'
-- colour: 'Red'
-- capacity: '256GB'
-- network: 'Unlocked'
-- grade: 'Grade A'
-- condition: 'Working'
-- count: 129
-
-#### Things to note:
-  - New formats could be introduced in the future ie. (json, xml etc).
-  - File headings could change in the future.
-  - Some files can be very large so watch out for memory usage.
-  - The code should be excutable from a terminal.
-  - Please provide brief read me describing how to run your application.
-  - PHP 7+ must be used.
-  - Should be built using native PHP and no third party libraries.
-  - Required fields if not found within file should throw an exception.
-
-
-#### Bonus:
-  - Add unit/integration tests.
-
-Example files can be found in the examples directory.
-
-Please make sure this project is completed at least one working day before your interview.
-
-The completed project should be submitted by pushing the code to GitHub and a link emailed to HR.
+#### Takeaways
+1. I purposefully funnelled all my execution into CSV. Basically any supported file type will be transformed into a CSV file and then executed.
+2. This reduces the burden of supporting many different file types transformation logic into products and then printing.
+3. I just need to add a new file type to csv transformer and then the normal execution continues.
+4. I added debug code to see error points, these can be removed in production.
+5. Set the memory limit to 1 gig, XML, especially, is expensive to manipulate if the file is huge.  
+6. The file 'new_products_comma_separated.csv' will throw an expection because it contains missing required fields
+7. To see full usage, use 'all_fields_there.csv'. This is a file with dummy data but has all required fields
