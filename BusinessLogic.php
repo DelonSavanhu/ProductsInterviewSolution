@@ -1,8 +1,30 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+ini_set('memory_limit', 1073741824);
+include("Product.php");
 class BusinessLogic{
+public function ReadCSVFile($path){
+try{
+    
+$products=array();
+$file = fopen($path,"r");
+while(!feof($file))
+  {
+  $products[]=$this->MapLineToProduct(fgetcsv($file));  
+  }  
+  $this->printProducts($products);
+  $counts = array_count_values(array_column($products, 'hash'));
+  //$bl->printProductCount(array_slice($products,0,1,true),$counts); //we slice, we only need headers
+  fclose($file);
+}catch (Throwable $ex){
+    echo $ex->getMessage();
+    
+}
+    }
     public function MapLineToProduct($line){    
         $product= new Product();    
-        $product->brand_name=$line[0]?? '';
+        $product->brand_name=$line[0]?? '';// throw new Exception("required field");
         $product->model_name=$line[1]?? '';
         $product->condition_name=$line[2]?? '';
         $product->gb_spec_name=$line[3]?? '';
@@ -57,5 +79,73 @@ class BusinessLogic{
             echo "<hr><br>";
         }
     }
+    function readJsonFile($file)
+    {
+        if (($json = file_get_contents($file)) == false)
+        die('Error reading json file...');
+        $data = json_decode($json, false, 10);
+        $products[]=$this->MapLineToProduct(fgetcsv($data));  
+        $this->printProducts($products);
+        $counts = array_count_values(array_column($data, 'hash'));
+        //$bl->printProductCount(array_slice($products,0,1,true),$counts); //we slice, we only need headers
+    }
+
+    function jsonToCSV($jfilename, $cfilename)
+    {
+    if (($json = file_get_contents($jfilename)) == false)
+        die('Error reading json file...');
+    $data = json_decode($json, true);
+    $fp = fopen($cfilename, 'w');
+    $header = false;
+    foreach ($data as $row)
+    {
+        if (empty($header))
+        {
+            $header = array_keys($row);
+            fputcsv($fp, $header);
+            $header = array_flip($header);
+        }
+        fputcsv($fp, array_merge($header, $row));
+    }
+    fclose($fp);
+    return;
 }
+function xml2csv($xmlFile, $csvFile) {
+try{
+  if (file_exists($xmlFile)) {
+        $xml = simplexml_load_file($xmlFile);
+        $f = fopen($csvFile, 'w');
+    
+    foreach ($xml->row as $row) {
+        fputcsv($f, get_object_vars($row),',','"');
+    }
+    fclose($f);
+//    }
+//    $this->createCsv($xml, $f);
+    fclose($f);
+    gc_collect_cycles();
+}else{
+    throw new Exception("file missing");
+}
+}catch(Exception $ex){}
+}
+function createCsv($xml,$f)
+ {
+       foreach ($xml->children() as $item) 
+        {
+           $hasChild = (count($item->children()) > 0)?true:false;
+           if( ! $hasChild)
+           {
+              $put_arr = array($item->getName(),$item); 
+              fputcsv($f, $put_arr ,',','"');
+           }
+           else
+           {
+              $this->createCsv($item, $f);
+           }
+        }
+ }
+}
+
+
 ?>
