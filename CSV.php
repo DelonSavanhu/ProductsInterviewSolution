@@ -7,6 +7,9 @@ class CSV
     public function ReadCSVFile($path, $output)
     { // function used to read CSV files
         try {
+            if(!file_exists($path)){
+                die("Input file was not found.");
+            }
             $bl = new BusinessLogic();
             $products = array();
             $file = fopen($path, "r");
